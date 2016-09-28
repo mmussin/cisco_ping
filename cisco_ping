@@ -1,1 +1,54 @@
+import requests
+import paramiko
+import time
+import sys
 
+'''
+Ping IP addresses listed in text file
+
+ping.py 1.2.3.4 username password iplist.txt
+'''
+
+def getClient(host_i, username, password):
+    global client
+    global remote_conn
+    global output
+    try:
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(host_ip, username=username, password=password, timeout=5)
+        remote_conn = client.invoke_shell()
+        output = remote_conn.recv(1000)
+    except paramiko.SSHException:
+        client.close()
+        print "Connection failed"
+        sys.exit()
+
+def getFileList(filename):
+    try:
+        f_in = open(filename,'r')
+        list = [line for line in f_in.read().split('\n') if line.strip()]
+        return list
+    except IOError:
+        sys.exit("The file does not exist")
+
+def openFile(filename, mode):
+    try:
+        file = open(filename, mode)
+    except IOError:
+        sys.exit("The file does not exist")
+
+def pingList(ipaddress_list):
+    file_out = open("C:\\Temp\\cisco_out1.txt", "w")
+    for ip in ipaddress_list:
+        remote_conn.send("ping {0}\n".format(ip))
+        time.sleep(1)
+        output = remote_conn.recv(10000)
+        print output
+        file_out.write(output)
+
+if __name__ == '__main__':
+    getClient()
+    file_list = getFileList("C:\\Temp\\cisco_input2.txt")
+    print file_list
+    pingList(file_list)
