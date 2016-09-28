@@ -1,8 +1,8 @@
-"""
+'''
 Ping IP addresses listed in text file
 
 ping.py 1.2.3.4 username password host_list ping_log
-"""
+'''
 
 __author__ = 'mmussin'
 
