@@ -6,7 +6,7 @@ import sys
 '''
 Ping IP addresses listed in text file
 
-ping.py 1.2.3.4 username password iplist.txt
+ping.py 1.2.3.4 username password host_list ping_log
 '''
 
 def getClient(host_i, username, password):
@@ -39,7 +39,7 @@ def openFile(filename, mode):
         sys.exit("The file does not exist")
 
 def pingList(ipaddress_list):
-    file_out = open("C:\\Temp\\cisco_out1.txt", "w")
+    file_out = open(ping_log, "w")
     for ip in ipaddress_list:
         remote_conn.send("ping {0}\n".format(ip))
         time.sleep(1)
@@ -48,7 +48,12 @@ def pingList(ipaddress_list):
         file_out.write(output)
 
 if __name__ == '__main__':
+    host_i = sys.argv[1]
+    username = sys.argv[2]
+    password = sys.argv[3]
+    host_list = sys.argv[4]
+    ping_log = sys.argv[5]
     getClient()
-    file_list = getFileList("C:\\Temp\\cisco_input2.txt")
+    file_list = getFileList(host_list)
     print file_list
     pingList(file_list)
